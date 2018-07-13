@@ -1,0 +1,58 @@
+#
+PATH=/bin:/usr/bin
+TMP=/tmp/proto$$
+HDIR=
+
+trap "rm -f $TMP" 0 1 2 3 15
+
+proto ()
+{
+	for f in $*
+	do
+		echo "#ifdef __STDC__"
+		cat $f | sed -e '/^#if.*TEST/,$d' | awk '/^[A-Za-z].*\(.*\) {.*$/ && !/static/ && !/typedef/ {\
+		printf( "extern %s;\n", $0 ); }' | sed -e 's/ {//'
+		echo "#else"
+		cat $f | sed -e '/^#if.*TEST/,$d' | awk '/^[A-Za-z].*\(.*\) {.*$/ && !/static/ && !/typedef/ {\
+		printf( "extern %s;\n", $0 ); }' | sed -e 's/(.*$/();/'
+		echo "#endif"
+	done
+}
+
+for file_c in $*
+do
+	if [ ! -f $file_c ]; then echo "$file_c?"; exit 1; fi
+
+	file_h=`basename $file_c .c`.h
+	if [ ! -f $file_h ]; then
+		if [ "$HDIR" != "" ]; then
+			if [ ! -f $HDIR/$file_h ];
+			then echo "$file_h?"; exit 1
+			else file_h=$HDIR/$file_h
+			fi
+		else echo "$file_h?"; exit 1
+		fi
+	fi
+
+	proto $file_c >$TMP
+
+	if [ `grep -c '__STDC__' $file_h` != 0 ]
+	then
+		>/dev/null ed $file_h <<-__A_MARK__
+/__STDC__/,/endif/d
+-1r $TMP
+w
+q
+__A_MARK__
+	else
+		>/dev/null ed $file_h <<-__A_MARK__
+$
+?endif?-1r $TMP
+w
+q
+__A_MARK__
+	fi
+done
+
+rm -fr $TMP
+exit 0
