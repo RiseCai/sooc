@@ -1,6 +1,6 @@
       COMPONENT = so-o
 
-          TESTS = test-Object test-OL test-list test-alist
+          TESTS = test-Object test-OL test-list test-alist test-Hello test-Application test-Responder
 
              CC = gcc
 
@@ -23,6 +23,15 @@ clean:
 wipe:	clean
 
 tests:		$(TESTS)
+
+test-Application:		test-Application.o $(SOO_LIB)
+	$(CC) $^ -o $@
+
+test-Responder:		test-Responder.o $(SOO_LIB)
+	$(CC) $^ -o $@
+
+test-Hello:		test-Hello.o $(SOO_LIB)
+	$(CC) $^ -o $@
 
 test-Object:	test-Object.o X.o Y.o Z.o $(SOO_LIB)
 	$(CC) $^ -o $@

@@ -8,12 +8,12 @@
 
          CFLAGS = -Wno-missing-braces -O -fstrength-reduce -finline-functions -fomit-frame-pointer
         
-       SOO_SRCS = So-o.c Object.c OL.c list.c alist.c
+       SOO_SRCS = So-o.c Object.c OL.c list.c alist.c Hello.c Once.c Application.c Responder.c
        SOO_OBJS = $(SOO_SRCS:.c=.o)
 
         SOO_LIB = lib$(COMPONENT).a
 
-      INC_FILES = So-o.h Object.h OL.h list.h alist.h
+      INC_FILES = So-o.h Object.h OL.h list.h alist.h Hello.h Once.h Application.h Responder.h
       LIB_FILES = $(SOO_LIB)
 
    LICENSE_FILE = LICENSE
@@ -38,6 +38,7 @@ clean:
 
 wipe:	clean
 	rm -f $(TARGET)
+	cd tests; make wipe
 
 tar:
 	tar -zcf $(COMPONENT).tar.gz $(TAR_FILES)
