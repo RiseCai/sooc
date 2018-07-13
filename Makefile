@@ -39,6 +39,7 @@ clean:
 wipe:	clean
 	rm -f $(TARGET)
 	cd tests; make wipe
+	cd poker; make wipe
 
 tar:
 	tar -zcf $(COMPONENT).tar.gz $(TAR_FILES)
