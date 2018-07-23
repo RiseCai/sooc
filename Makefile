@@ -19,6 +19,7 @@
    LICENSE_FILE = LICENSE
 
       TAR_FILES = $(LICENSE_FILE) $(INC_FILES) $(SOO_SRCS) prototype Makefile
+      ZIP_FILES = $(TAR_FILES)
  
 #.SILENT:
 
@@ -37,12 +38,16 @@ clean:
 	rm -f core *.o *.exe *~
 
 wipe:	clean
+	rm -f $(COMPONENT).tar.gz $(COMPONENT).zip
 	rm -f $(TARGET)
 	cd tests; make wipe
 	cd poker; make wipe
 
 tar:
 	tar -zcf $(COMPONENT).tar.gz $(TAR_FILES)
+
+zip:
+	zip $(COMPONENT).zip $(ZIP_FILES)
 
 #
 OL.c:		OL.h
