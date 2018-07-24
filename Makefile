@@ -21,6 +21,17 @@
       TAR_FILES = $(LICENSE_FILE) $(INC_FILES) $(SOO_SRCS) prototype Makefile
       ZIP_FILES = $(TAR_FILES)
  
+    INSTALL_DIR = /usr/local
+        INC_DIR = $(INSTALL_DIR)/include/$(COMPONENT)
+        LIB_DIR = $(INSTALL_DIR)/lib
+
+          OWNER = 0
+          GROUP = 0
+           MODE = 444
+          XMODE = 755
+
+        INSTALL = install
+
 #.SILENT:
 
 project:	$(TARGET)
@@ -48,6 +59,20 @@ tar:
 
 zip:
 	zip $(COMPONENT).zip $(ZIP_FILES)
+
+#
+
+install:	project
+install:	install.dir install.inc install.lib
+
+install.dir:
+	@for d in $(INC_DIR) $(LIB_DIR); do if [ ! -d $$d ]; then mkdir -p $$d; chown $(OWNER) $$d; chgrp $(GROUP) $$d; chmod $(XMODE) $$d; fi; done
+
+install.inc:
+	$(INSTALL) -c -m $(MODE) -o $(OWNER) -g $(GROUP) $(INC_FILES) $(INC_DIR)
+
+install.lib:
+	$(INSTALL) -c -m $(MODE) -o $(OWNER) -g $(GROUP) $(LIB_FILES) $(LIB_DIR)
 
 #
 OL.c:		OL.h
